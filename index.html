@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <link rel="shortcut icon" href="./favicon.ico"/>
+  <link rel="bookmark" href="./"/>
+  <title>Music Bible 
+  </title>
+  <link rel="stylesheet" href="./css/index.css">
+</head>
+
+<body>
+  <div class="wrap" >
+    <div class="play_wrap" id="player">
+      </script>
+      <div class="search_bar">
+        <img class="icon" src="./images/icon/icon.png" alt="icon" />
+        <div class="icontext">Music Bible</div>
+        <input type="text" placeholder="Search for songs or musicians" autocomplete="false" v-model='query' @keyup.enter="searchMusic();" />
+      </div>
+      <div class="center_con">
+        <div class='song_wrapper' ref='song_wrapper'>
+          <ul class="song_list">
+            <li v-for="item in musicList">
+              <a href="javascript:;" @click='playMusic(item.id)'></a>
+              <b>{{item.name}}</b>
+              <span>
+                <i @click="playMv(item.mvid)" v-if="item.mvid!=0"></i>
+              </span>
+            </li>
+
+          </ul>
+          <img src="images/line.png" class="switch_btn" alt="">
+        </div>
+        <div class="player_con" :class="{playing:isPlay}">
+          <img src="images/player_bar.png" class="play_bar" />
+          <img src="images/disc.png" class="disc autoRotate" />
+          <img :src="coverUrl==''?'./images/cover.png':coverUrl" class="cover autoRotate" />
+        </div>
+        <div class="comment_wrapper" ref='comment_wrapper'>
+        
+          <div class='comment_list'>
+
+            <dl v-for="item in hotComments">
+              <dt>
+                <img :src="item.user.avatarUrl" alt="" />
+              </dt>
+              <dd class="name">{{item.user.nickname}}</dd>
+              <dd class="detail">
+                {{item.content}}
+              </dd>
+            </dl>
+          </div>
+          <img src="images/line.png" class="right_line">
+        </div>
+      </div>
+      <div class="audio_con">
+        <audio ref='audio' @play="play" @pause="pause" :src="musicUrl" controls autoplay loop class="myaudio"></audio>
+      </div>
+      <div class="video_con" v-show="showVideo">
+        <video ref='video' :src="mvUrl" controls="controls" autoplay="autoplay"></video>
+        <div class="mask" @click="closeMv"></div>
+
+      </div>
+    </div>
+  </div>
+ 
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script type="text/javascript">
+    axios.defaults.baseURL = 'https://autumnfish.cn';
+    var app = new Vue({
+      el: "#player",
+      data: {
+        query: '',
+        musicList: [],
+        musicUrl: '',
+        isPlay: false,
+        hotComments: [],
+        coverUrl: '',
+        showVideo: false,
+        mvUrl: ''
+      },
+      methods: {
+        searchMusic() {
+          if (this.query == 0) {
+            return
+          }
+          axios.get('/search?keywords=' + this.query).then(response => {
+            this.musicList = response.data.result.songs;
+          })
+          this.query = ''
+        },
+        playMusic(musicId) {
+          axios.get('/song/url?id=' + musicId).then(response => {
+            this.musicUrl = response.data.data[0].url
+          })
+          axios.get('/comment/hot?type=0&id=' + musicId).then(response => {
+            this.hotComments = response.data.hotComments
+
+          })
+          axios.get('/song/detail?ids=' + musicId).then(response => {
+            this.coverUrl = response.data.songs[0].al.picUrl
+          })
+
+        },
+        play() {
+          this.isPlay = true
+          this.mvUrl = ''
+        },
+        pause() {
+          this.isPlay = false
+        },
+        playMv(vid) {
+          if (vid) {
+            this.showVideo = true;
+            axios.get('/mv/url?id=' + vid).then(response => {
+              this.$refs.audio.pause()
+              this.mvUrl = response.data.data.url
+            })
+          }
+        },   
+        closeMv() {
+          this.showVideo = false
+          this.$refs.video.pause()
+        },
+
+        historySearch(history) {
+          this.query = history
+          this.searchMusic()
+          this.showHistory = true;
+        }
+      },
+
+    })
+
+  </script>
+</body>
+
+</html>
