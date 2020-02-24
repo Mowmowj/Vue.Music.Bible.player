@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0" /> -->
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
   <link rel="shortcut icon" href="./favicon.ico"/>
   <link rel="bookmark" href="./"/>
@@ -18,16 +18,16 @@
       <div class="search_bar">
         <img class="icon" src="./images/icon/icon.png" alt="icon" />
         <div class="icontext">Music Bible</div>
-        <input type="text" placeholder="Search for songs or musicians" autocomplete="false" v-model='query' @keyup.enter="searchMusic();" />
+        <input type="text"  style="cursor: pointer;" placeholder="Search for songs or musicians" autocomplete="false" v-model='query' @click="searchMusic();"@keyup.enter="searchMusic();" />
       </div>
       <div class="center_con">
         <div class='song_wrapper' ref='song_wrapper'>
           <ul class="song_list">
             <li v-for="item in musicList">
               <a href="javascript:;" @click='playMusic(item.id)'></a>
-              <b>{{item.name}}</b>
+              <b @click='playMusic(item.id)' style="cursor: pointer;">{{item.name}}</b>
               <span>
-                <i @click="playMv(item.mvid)" v-if="item.mvid!=0"></i>
+                <i title="点击MV旁的遮罩退出观看MV" @click="playMv(item.mvid)" v-if="item.mvid!=0"></i>
               </span>
             </li>
 

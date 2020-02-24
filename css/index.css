@@ -1,7 +1,7 @@
 body,
 ul,
 dl,
-dd { margin: 0px;padding: 0px;}
+dd { margin: 0px;padding: 0px; zoom: 1.1;}
 ::-webkit-input-placeholder { /* WebKit, Blink, Edge */
   color:#C77373;
 }
@@ -122,8 +122,7 @@ dd { margin: 0px;padding: 0px;}
 }
 
 .song_list li b {
-  font-weight: normal;
-  width: 122px;
+  width: 100px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -205,15 +204,18 @@ dd { margin: 0px;padding: 0px;}
   left: 600px;
   top: 0px;
   padding: 25px 10px;
+  cursor: default;
 }
 .comment_wrapper .title {
   position: absolute;
   top: 0;
   margin-top: 10px;
+  cursor: default;
 }
 .comment_wrapper .comment_list {
   overflow: auto;
   height: 410px;
+  cursor: default;
 }
 .comment_wrapper .comment_list::-webkit-scrollbar {
   display: none;
